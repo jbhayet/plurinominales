@@ -1,4 +1,10 @@
+"""
+@author: JBH
+@email: jbhayet@cimat.mx
+"""
+
 import numpy as np
+
 
 def hagenbach(votes,parties,nSeats,detailed_print=False):
     nParties= len(parties)
@@ -136,3 +142,5 @@ def danish(votes,parties,nSeats,detailed_print=False):
         for idx in range(nParties):
             print("Party: {}  Seats: {}".format(parties[idx],int(distribution[idx])))
     return distribution
+
+assignation_models =  {'dhondt':dhondt,'slague':slague,'mslague':mslague,'danish':danish,'hare':hare,'hagenbach':hagenbach}
