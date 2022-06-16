@@ -5,6 +5,8 @@
 
 import numpy as np
 
+def sanchez(votes,parties,nSeats,detailed_print=False):
+    pass
 
 def hagenbach(votes,parties,nSeats,detailed_print=False):
     nParties= len(parties)
