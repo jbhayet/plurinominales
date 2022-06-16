@@ -20,9 +20,9 @@ parser.add_argument('--method','-m',
                     choices=['dhondt', 'slague', 'mslague', 'danish','hare','hagenbach','majority'],
                     help='specify the assignation method (default: "D Hondt")')
 parser.add_argument('--correction_method','-c',
-                    default='rojas',
+                    default='none',
                     choices=['rojas', 'sanchez','none'],
-                    help='specify the assignation method (default: "D Hondt")')
+                    help='specify the correction method (default: "none")')
 parser.add_argument('--detailed_output',
                     action='store_true',
                     help='prints intermediate results in each method')
