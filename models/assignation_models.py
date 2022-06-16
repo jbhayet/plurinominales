@@ -5,8 +5,19 @@
 
 import numpy as np
 
-def sanchez(votes,parties,nSeats,detailed_print=False):
-    pass
+def majority(votes,parties,nSeats,detailed_print=False):
+    nParties= len(parties)
+    if detailed_print:
+        print("------------------------")
+        print("Majority model")
+    distribution = np.zeros(nParties)
+    # Attribution to the winner
+    winner = np.argmax(votes)
+    distribution[winner] = nSeats
+    if detailed_print:
+        for idx in range(nParties):
+            print("Party: {}  Seats: {}".format(parties[idx],int(distribution[idx])))
+    return distribution
 
 def hagenbach(votes,parties,nSeats,detailed_print=False):
     nParties= len(parties)
@@ -145,4 +156,4 @@ def danish(votes,parties,nSeats,detailed_print=False):
             print("Party: {}  Seats: {}".format(parties[idx],int(distribution[idx])))
     return distribution
 
-assignation_models =  {'dhondt':dhondt,'slague':slague,'mslague':mslague,'danish':danish,'hare':hare,'hagenbach':hagenbach}
+assignation_models =  {'dhondt':dhondt,'slague':slague,'mslague':mslague,'danish':danish,'hare':hare,'hagenbach':hagenbach,'majority':majority}

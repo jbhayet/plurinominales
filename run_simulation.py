@@ -4,8 +4,9 @@
 """
 import numpy as np
 import pandas as pd
-import argparse
+import argparse, sys
 from models.assignation_models import *
+from models.correction_models import *
 
 minquota_applied_locally = False
 
@@ -14,16 +15,17 @@ parser = argparse.ArgumentParser(description='Simulate the assignation of MPs in
 parser.add_argument('--national',
                     action='store_true',
                     help='does the assignation nation-wide (and not state-wide)')
-parser.add_argument('--method',
+parser.add_argument('--method','-m',
                     default='dhondt',
-                    choices=['dhondt', 'slague', 'mslague', 'danish','hare','hagenbach'],
+                    choices=['dhondt', 'slague', 'mslague', 'danish','hare','hagenbach','majority'],
+                    help='specify the assignation method (default: "D Hondt")')
+parser.add_argument('--correction_method','-c',
+                    default='rojas',
+                    choices=['rojas', 'sanchez','none'],
                     help='specify the assignation method (default: "D Hondt")')
 parser.add_argument('--detailed_output',
                     action='store_true',
                     help='prints intermediate results in each method')
-parser.add_argument('--apply_correction',
-                    action='store_true',
-                    help='apply a correction process')
 parser.add_argument('--minpc',
                     type=float, default=.03, metavar='N',
                     help='minimal percentage of the expressed votes to be eligible for the MPs assignation (default: .03)')
@@ -50,8 +52,8 @@ if args.national:
             nationalVote[idx]=0
     # No vote for the null votes :)
     nationalVote[-1]=0
-    # Apply the assignation method
-    nationalDistribution = assignation_models[args.method](nationalVote,parties,args.seats)
+    # Apply the assignation method nation-wide
+    nationalDistribution = assignation_models[args.method](nationalVote,parties,args.seats,args.detailed_output)
 
 # State wise analysis
 else:
@@ -87,38 +89,18 @@ else:
         nationalDistribution += assignation_models[args.method](votes,parties,seatsForState)
 
 print('---------------')
-print('Method {} '.format(args.method))
+print('Initial assignation with {} method'.format(args.method))
 for idx in range(nParties-1):
     print("Party: {}  Seats: {}".format(parties[idx],int(nationalDistribution[idx])))
 print('Total seats {}'.format(int(np.sum(nationalDistribution))))
 
 
-if args.apply_correction:
+if args.correction_method!='none':
     print('---------------')
-    print('Correction ')
-    overrepresentation = np.zeros(nParties)
-    for idx in range(nParties-1):
-        if nationalVote[idx]>0:
-            propSeats = nationalDistribution[idx]/np.sum(nationalDistribution)
-            propVote  = nationalVote[idx]/np.sum(nationalVote[:-1])
-            overrepresentation[idx] = nationalDistribution[idx]-propVote*np.sum(nationalDistribution)
-            print("Party: {}  Over-representation (in seats): {:.3f} or in proportion {:.3f}".format(parties[idx],overrepresentation[idx],propSeats/propVote))
-
-    while True:
-        # Check if the largest absolute overrepresentation is superior to one
-        if np.max(np.abs(overrepresentation))>1.0:
-            mostNeededParty = np.argmin(overrepresentation)
-            nationalDistribution[mostNeededParty]+=1
-            if args.detailed_output:
-                print('Adding a seat for {}'.format(parties[mostNeededParty]))
-            for idx in range(nParties-1):
-                propVote  = nationalVote[idx]/np.sum(nationalVote[:-1])
-                overrepresentation[idx] = nationalDistribution[idx]-propVote*np.sum(nationalDistribution)
-        else:
-            break
+    print('Correction with {} method'.format(args.correction_method))
+    nationalDistribution = correction_models[args.correction_method](nationalVote,nationalDistribution,parties,args.detailed_output)
     print('---------------')
-    print('After correction ')
-    print('Over representation {}'.format(overrepresentation))
+    print('Final distribution')
     for idx in range(nParties-1):
         print("Party: {}  Seats: {}".format(parties[idx],int(nationalDistribution[idx])))
     print('Total seats {}'.format(int(np.sum(nationalDistribution))))
