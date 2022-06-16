@@ -89,6 +89,7 @@ def dhondt(votes,parties,nSeats,detailed_print=False):
     return distribution
 
 def slague(votes,parties,nSeats,detailed_print=False):
+    nParties= len(parties)
     if detailed_print:
         print("------------------------")
         print("Sainte Lague model")
@@ -111,6 +112,7 @@ def slague(votes,parties,nSeats,detailed_print=False):
     return distribution
 
 def mslague(votes,parties,nSeats,detailed_print=False):
+    nParties= len(parties)
     if detailed_print:
         print("------------------------")
         print("Modified Sainte Lague model")
@@ -135,6 +137,7 @@ def mslague(votes,parties,nSeats,detailed_print=False):
     return distribution
 
 def danish(votes,parties,nSeats,detailed_print=False):
+    nParties= len(parties)
     if detailed_print:
         print("------------------------")
         print("Danish model")
