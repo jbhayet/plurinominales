@@ -7,6 +7,7 @@ import pandas as pd
 import argparse, sys
 from models.assignation_models import *
 from models.correction_models import *
+from utils.graphs import *
 
 minquota_applied_locally = False
 
@@ -104,3 +105,5 @@ if args.correction_method!='none':
     for idx in range(nParties-1):
         print("Party: {}  Seats: {}".format(parties[idx],int(nationalDistribution[idx])))
     print('Total seats {}'.format(int(np.sum(nationalDistribution))))
+
+visualizeParliament(parties,nationalDistribution,args)
