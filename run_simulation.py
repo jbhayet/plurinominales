@@ -34,6 +34,10 @@ parser.add_argument('--seats',
                     type=int,
                     default=300,
                     help='base number of seats to be assigned (default: 300)')
+parser.add_argument('--max_seats',
+                    type=int,
+                    default=500,
+                    help='maximum number of seats to be assigned. used by sanchez correction method (default: 500)')
 args = parser.parse_args()
 
 
@@ -99,7 +103,7 @@ print('Total seats {}'.format(int(np.sum(nationalDistribution))))
 if args.correction_method!='none':
     print('---------------')
     print('Correction with {} method'.format(args.correction_method))
-    nationalDistribution = correction_models[args.correction_method](nationalVote,nationalDistribution,parties,args.detailed_output)
+    nationalDistribution = correction_models[args.correction_method](nationalVote,nationalDistribution,parties,max_seats=args.max_seats,detailed_print=args.detailed_output)
     print('---------------')
     print('Final distribution')
     for idx in range(nParties-1):

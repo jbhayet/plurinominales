@@ -5,19 +5,36 @@
 
 import numpy as np
 
-def sanchez(nationalVote,nationalDistribution,parties,detailed_print=False):
+def sanchez(nationalVote,nationalDistribution,parties,max_seats=310,detailed_print=False):
     nParties= len(parties)
-    mu0 = np.sum(nationalVote)
+
+    # Initialize q0
+    q0 = np.sum(nationalVote)
+    V  = 0
+    N  = 0
     for party in range(len(parties)-1):
+        # Determine the cost of adquiring one seat (in votes)
         if nationalDistribution[party]>0:
             ri = nationalVote[party]/nationalDistribution[party]
-            if ri<mu0:
-                mu0 = ri
-    for party in range(len(parties)-1):
-        nationalDistribution[party] +=int(np.rint((nationalVote[party]-mu0*nationalDistribution[party])/mu0))
+            if ri<q0:
+                q0 = ri
+            V += nationalVote[party]
+            N +=nationalDistribution[party]
+    if N>=max_seats:
+        print("[ERR] Correction canot be applied")
+        return nationalDistribution
+    # Test V/max_seats<= q0
+    if (V/max_seats<=q0):
+        for party in range(len(parties)-1):
+            nationalDistribution[party] +=int(np.rint((nationalVote[party]-q0*nationalDistribution[party])/q0))
+    else:
+        q = (V-q0*N)/(max_seats-N)
+        for party in range(len(parties)-1):
+            nationalDistribution[party] +=int(np.rint((nationalVote[party]-q0*nationalDistribution[party])/q))
+
     return nationalDistribution
 
-def rojas(nationalVote,nationalDistribution,parties,detailed_print=False):
+def rojas(nationalVote,nationalDistribution,parties,max_seats=500,detailed_print=False):
     nParties= len(parties)
     overrepresentation = np.zeros(nParties)
     for idx in range(nParties-1):
