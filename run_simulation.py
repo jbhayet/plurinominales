@@ -36,7 +36,7 @@ parser.add_argument('--seats',
                     help='base number of seats to be assigned (default: 300)')
 parser.add_argument('--max_seats',
                     type=int,
-                    default=500,
+                    default=327,
                     help='maximum number of seats to be assigned. used by sanchez correction method (default: 500)')
 args = parser.parse_args()
 
@@ -98,7 +98,6 @@ print('Initial assignation with {} method'.format(args.method))
 for idx in range(nParties-1):
     print("Party: {}  Seats: {}".format(parties[idx],int(nationalDistribution[idx])))
 print('Total seats {}'.format(int(np.sum(nationalDistribution))))
-
 
 if args.correction_method!='none':
     print('---------------')

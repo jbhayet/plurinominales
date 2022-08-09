@@ -5,7 +5,7 @@
 
 import numpy as np
 
-def sanchez(nationalVote,nationalDistribution,parties,max_seats=310,detailed_print=False):
+def sanchez(nationalVote,nationalDistribution,parties,max_seats=327,detailed_print=False):
     nParties= len(parties)
 
     # Initialize q0
@@ -19,19 +19,20 @@ def sanchez(nationalVote,nationalDistribution,parties,max_seats=310,detailed_pri
             if ri<q0:
                 q0 = ri
             V += nationalVote[party]
-            N +=nationalDistribution[party]
+            N += nationalDistribution[party]
     if N>=max_seats:
         print("[ERR] Correction canot be applied")
         return nationalDistribution
-    # Test V/max_seats<= q0
     if (V/max_seats<=q0):
+        print("Sanchez method: 1st case")
         for party in range(len(parties)-1):
-            nationalDistribution[party] +=int(np.rint((nationalVote[party]-q0*nationalDistribution[party])/q0))
+            correction  = np.rint((nationalVote[party]/q0-nationalDistribution[party]))
+            nationalDistribution[party] += correction
     else:
+        print("[INFO] Sanchez method: 2nd case")
         q = (V-q0*N)/(max_seats-N)
         for party in range(len(parties)-1):
             nationalDistribution[party] +=int(np.rint((nationalVote[party]-q0*nationalDistribution[party])/q))
-
     return nationalDistribution
 
 def rojas(nationalVote,nationalDistribution,parties,max_seats=500,detailed_print=False):
